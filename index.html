@@ -1,0 +1,2177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Metteyye Residency - Billing System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <link rel="icon" type="image/png" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmR42Hr9se6M08uY8MhFEX4WdL76M1M4Qlu6fz3SltHCpbyBO62MGCzZ4Gof4SMlaUP2MYuxmu2N7CRbJ7W23jUnDC4FdqJhGiOqbv9Qo46B96uaG29YzsFWStBqs4P7liu7QDy3Y9vvpf8MHHHm6y6lhXXPgwt8hRXad8ZWwea0d02KroNVD1QirMANDE/s220/1000093447.png">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            color: #333;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+            object-fit: contain;
+        }
+        
+        .header-text {
+            flex-grow: 1;
+        }
+        
+        .hotel-name {
+            color: #8e44ad;
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+        
+        .tagline {
+            color: #3498db;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        
+        .hotel-info {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background-color: #8e44ad;
+            color: white;
+            border-color: #8e44ad;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            background-color: #8e44ad;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px 15px;
+        }
+        
+        .form-group {
+            flex: 1 0 calc(33.333% - 20px);
+            margin: 0 10px;
+            min-width: 250px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin: 5px;
+        }
+        
+        .btn-generate {
+            background-color: #27ae60;
+        }
+        
+        .btn-generate:hover {
+            background-color: #219653;
+        }
+        
+        .btn-print {
+            background-color: #3498db;
+        }
+        
+        .btn-print:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-reset {
+            background-color: #e74c3c;
+        }
+        
+        .btn-reset:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-add {
+            background-color: #8e44ad;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        
+        .btn-add:hover {
+            background-color: #6c3483;
+        }
+        
+        .btn-save {
+            background-color: #f39c12;
+        }
+        
+        .btn-save:hover {
+            background-color: #d35400;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .calculation-section {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        
+        .calculation-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            font-size: 18px;
+            color: #8e44ad;
+            border-bottom: 2px solid #8e44ad;
+            padding-top: 10px;
+        }
+        
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+        
+        .meal-plan-section {
+            margin-top: 20px;
+        }
+        
+        .meal-plan-row, .room-charge-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .meal-plan-row select, .meal-plan-row input,
+        .room-charge-row select, .room-charge-row input {
+            margin-right: 10px;
+        }
+        
+        .remove-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+        
+        .invoice-container {
+            display: none;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: white;
+            position: relative;
+        }
+        
+        .invoice-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #8e44ad;
+            padding-bottom: 15px;
+        }
+        
+        .invoice-logo {
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+            object-fit: contain;
+        }
+        
+        .invoice-hotel-info {
+            flex-grow: 1;
+        }
+        
+        .invoice-title {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 24px;
+            color: #8e44ad;
+        }
+        
+        .invoice-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .invoice-column {
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .invoice-table th, .invoice-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .invoice-table th {
+            background-color: #f2f2f2;
+        }
+        
+        .signature-area {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+        }
+        
+        .signature-box {
+            width: 45%;
+            border-top: 1px solid #333;
+            padding-top: 5px;
+            text-align: center;
+        }
+        
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.2);
+            text-align: right;
+        }
+        
+        .bill-number-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .bill-number-controls input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        .bill-number-controls button {
+            padding: 10px;
+            background: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .invoice-container, .invoice-container * {
+                visibility: visible;
+            }
+            .invoice-container {
+                display: block;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                border: none;
+            }
+            .btn {
+                display: none;
+            }
+            .watermark {
+                opacity: 0.5;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .form-group {
+                flex: 1 0 calc(100% - 20px);
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .logo {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            .meal-plan-row, .room-charge-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .meal-plan-row select, .meal-plan-row input,
+            .room-charge-row select, .room-charge-row input {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .bill-number-controls {
+                flex-direction: column;
+            }
+            .bill-number-controls input {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                margin-bottom: 5px;
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmR42Hr9se6M08uY8MhFEX4WdL76M1M4Qlu6fz3SltHCpbyBO62MGCzZ4Gof4SMlaUP2MYuxmu2N7CRbJ7W23jUnDC4FdqJhGiOqbv9Qo46B96uaG29YzsFWStBqs4P7liu7QDy3Y9vvpf8MHHHm6y6lhXXPgwt8hRXad8ZWwea0d02KroNVD1QirMANDE/s220/1000093447.png" alt="Hotel Metteyye Residency Logo" class="logo">
+            <div class="header-text">
+                <h1 class="hotel-name">Hotel Metteyye Residency</h1>
+                <p class="tagline">Feel Closer to Buddha</p>
+                <p class="hotel-info">Buddha Marg, Kushinagar, Uttar Pradesh, India - 274403</p>
+                <p class="hotel-info">Contact: +91 9219182689, 9818138203 | Email: Metteyyeresidencyhotel@gmail.com</p>
+                <p class="hotel-info">Website: hotelmetteyyeresidency.com | GSTIN: 09AADCH6919B1ZO</p>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="main-bill">Main Bill</div>
+            <div class="tab" data-tab="food-bill">Food Bill</div>
+        </div>
+        
+        <form id="invoiceForm">
+            <!-- Main Bill Tab Content -->
+            <div class="tab-content active" id="main-bill-content">
+                <div class="form-section">
+                    <h2 class="section-title">Bill Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="billNumber" class="required">Bill Number</label>
+                            <div class="bill-number-controls">
+                                <input type="text" id="billNumber" name="billNumber" required>
+                                <button type="button" id="generateBillNumber">Auto</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="billDate" class="required">Bill Date</label>
+                            <input type="date" id="billDate" name="billDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="billType">Bill Type</label>
+                            <select id="billType" name="billType">
+                                <option value="individual">Individual Bill</option>
+                                <option value="group">Group Bill</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Guest Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guestName" class="required">Guest Name</label>
+                            <input type="text" id="guestName" name="guestName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address" class="required">Address</label>
+                            <input type="text" id="address" name="address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone" class="required">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nationality" class="required">Nationality</label>
+                            <input type="text" id="nationality" name="nationality" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gstin">GSTIN (Guest)</label>
+                            <input type="text" id="gstin" name="gstin">
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company</label>
+                            <input type="text" id="company" name="company">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="grcNumber" class="required">G.R.C. Number</label>
+                            <input type="text" id="grcNumber" name="grcNumber" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Stay Details</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="arrivalDate" class="required">Arrival Date</label>
+                            <input type="date" id="arrivalDate" name="arrivalDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="arrivalTime" class="required">Arrival Time</label>
+                            <input type="time" id="arrivalTime" name="arrivalTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="departureDate" class="required">Departure Date</label>
+                            <input type="date" id="departureDate" name="departureDate" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="departureTime" class="required">Departure Time</label>
+                            <input type="time" id="departureTime" name="departureTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pax" class="required">No. of Pax</label>
+                            <input type="number" id="pax" name="pax" min="1" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Room Charges (Incl. Taxes)</h2>
+                    <div id="roomChargesContainer">
+                        <div class="room-charge-row">
+                            <input type="text" class="room-number" placeholder="Room Number" required>
+                            <select class="room-plan">
+                                <option value="EP">EP (European Plan)</option>
+                                <option value="CP">CP (Continental Plan)</option>
+                                <option value="MAP">MAP (Modified American Plan)</option>
+                                <option value="AP">AP (American Plan)</option>
+                            <!--    <option value="CPAI">CPAI (Continental Plan with AI)</option>
+                                <option value="MAPAI">MAPAI (Modified American Plan with AI)</option>
+                                <option value="APAI">APAI (American Plan with AI)</option>   -->
+                            </select>
+                            <select class="room-occupancy">
+                                <option value="1">Single</option>
+                                <option value="2">Double</option>
+                                <option value="3">Triple</option>
+                                <option value="4">Quad</option>
+                            </select>
+                            <input type="number" class="room-rate" placeholder="Rate per day" min="0" step="0.01" required>
+                            <input type="number" class="room-days" placeholder="Days" min="1" value="1" required>
+                            <button type="button" class="remove-btn">×</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addRoomCharge" class="btn btn-add">Add Another Room</button>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Additional Services</h2>
+                    <div id="mealPlansContainer">
+                        <div class="meal-plan-row">
+                            <select class="meal-type">
+                                <option value="Breakfast">Breakfast</option>
+                                <option value="Lunch">Lunch</option>
+                                <option value="Dinner">Dinner</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Other">Other Service</option>
+                            </select>
+                            <input type="number" class="meal-quantity" placeholder="Qty" min="1" value="1">
+                            <input type="number" class="meal-rate" placeholder="Rate" min="0" step="0.01">
+                            <input type="text" class="meal-description" placeholder="Description">
+                            <button type="button" class="remove-btn">×</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addMealPlan" class="btn btn-add">Add Another Service</button>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="discount">Discount</label>
+                            <input type="number" id="discount" name="discount" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="discountReason">Discount Reason</label>
+                            <input type="text" id="discountReason" name="discountReason">
+                        </div>
+                        <div class="form-group">
+                            <label for="advancePayment">Advance Payment</label>
+                            <input type="number" id="advancePayment" name="advancePayment" min="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="paymentMode" class="required">Mode of Payment</label>
+                            <select id="paymentMode" name="paymentMode" required>
+                                <option value="Cash">Cash</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calculation-section">
+                    <h3>Bill Breakdown</h3>
+                    <div class="calculation-row">
+                        <span>Room Charges (Excl. Taxes):</span>
+                        <span id="roomChargesDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>Additional Services:</span>
+                        <span id="additionalChargesDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>Subtotal:</span>
+                        <span id="subtotalDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>CGST (6%):</span>
+                        <span id="cgstDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>SGST (6%):</span>
+                        <span id="sgstDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>Total Amount:</span>
+                        <span id="totalAmountDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>Discount:</span>
+                        <span id="discountDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>Advance Payment:</span>
+                        <span id="advanceDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row total-row">
+                        <span>Balance Due:</span>
+                        <span id="balanceDisplay">₹0.00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Food Bill Tab Content -->
+            <div class="tab-content" id="food-bill-content">
+                <div class="form-section">
+                    <h2 class="section-title">Food Bill Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="foodBillNumber" class="required">Food Bill Number</label>
+                            <div class="bill-number-controls">
+                                <input type="text" id="foodBillNumber" name="foodBillNumber" required>
+                                <button type="button" id="generateFoodBillNumber">Auto</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="foodBillDate" class="required">Bill Date</label>
+                            <input type="date" id="foodBillDate" name="foodBillDate" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Customer Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="foodCustomerName" class="required">Customer Name</label>
+                            <input type="text" id="foodCustomerName" name="foodCustomerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="foodCustomerPhone">Phone Number</label>
+                            <input type="tel" id="foodCustomerPhone" name="foodCustomerPhone">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Food Items</h2>
+                    <div id="foodItemsContainer">
+                        <div class="meal-plan-row">
+                            <input type="text" class="food-item-name" placeholder="Item Name" required>
+                            <input type="number" class="food-item-quantity" placeholder="Qty" min="1" value="1" required>
+                            <input type="number" class="food-item-rate" placeholder="Rate" min="0" step="0.01" required>
+                            <button type="button" class="remove-btn">×</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addFoodItem" class="btn btn-add">Add Another Item</button>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="foodDiscount">Discount</label>
+                            <input type="number" id="foodDiscount" name="foodDiscount" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="foodPaymentMode" class="required">Mode of Payment</label>
+                            <select id="foodPaymentMode" name="foodPaymentMode" required>
+                                <option value="Cash">Cash</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Debit Card">Debit Card</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="calculation-section">
+                    <h3>Food Bill Breakdown</h3>
+                    <div class="calculation-row">
+                        <span>Food Items Total:</span>
+                        <span id="foodTotalDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>CGST (2.5%):</span>
+                        <span id="foodCgstDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>SGST (2.5%):</span>
+                        <span id="foodSgstDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row">
+                        <span>Discount:</span>
+                        <span id="foodDiscountDisplay">₹0.00</span>
+                    </div>
+                    <div class="calculation-row total-row">
+                        <span>Total Amount:</span>
+                        <span id="foodTotalAmountDisplay">₹0.00</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button type="button" id="generateInvoice" class="btn btn-generate">Generate Invoice</button>
+                <button type="button" id="printInvoice" class="btn btn-print">Print Invoice</button>
+                <button type="button" id="generatePdf" class="btn btn-print">Generate PDF</button>
+                <button type="button" id="saveToSheets" class="btn btn-save">Save to Google Sheets</button>
+                <button type="reset" class="btn btn-reset">Reset Form</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="invoice" class="invoice-container">
+        <div class="invoice-header">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmR42Hr9se6M08uY8MhFEX4WdL76M1M4Qlu6fz3SltHCpbyBO62MGCzZ4Gof4SMlaUP2MYuxmu2N7CRbJ7W23jUnDC4FdqJhGiOqbv9Qo46B96uaG29YzsFWStBqs4P7liu7QDy3Y9vvpf8MHHHm6y6lhXXPgwt8hRXad8ZWwea0d02KroNVD1QirMANDE/s220/1000093447.png" alt="Hotel Metteyye Residency Logo" class="invoice-logo">
+            <div class="invoice-hotel-info">
+                <h2>Hotel Metteyye Residency</h2>
+                <p>Feel Closer to Buddha</p>
+                <p>Buddha Marg, Kushinagar, Uttar Pradesh, India - 274403</p>
+                <p>Contact: +91 9219182689, 9818138203 | Email: Metteyyeresidencyhotel@gmail.com</p>
+                <p>Website: hotelmetteyyeresidency.com | GSTIN: 09AADCH6919B1ZO</p>
+            </div>
+        </div>
+        
+        <h2 class="invoice-title">INVOICE</h2>
+        
+        <div class="invoice-details">
+            <div class="invoice-column">
+                <p><strong>Bill No:</strong> <span id="invBillNo"></span></p>
+                <p><strong>Date:</strong> <span id="invDate"></span></p>
+                <p><strong>G.R.C. No:</strong> <span id="invGrcNo"></span></p>
+                <p><strong>Payment Mode:</strong> <span id="invPaymentMode"></span></p>
+            </div>
+            <div class="invoice-column">
+                <p><strong>Name:</strong> <span id="invGuestName"></span></p>
+                <p><strong>Address:</strong> <span id="invAddress"></span></p>
+                <p><strong>Phone:</strong> <span id="invPhone"></span></p>
+                <p><strong>Nationality:</strong> <span id="invNationality"></span></p>
+                <p><strong>GSTIN:</strong> <span id="invGstin"></span></p>
+                <p><strong>Company:</strong> <span id="invCompany"></span></p>
+            </div>
+            <div class="invoice-column">
+                <p><strong>Arrival:</strong> <span id="invArrivalDate"></span> at <span id="invArrivalTime"></span></p>
+                <p><strong>Departure:</strong> <span id="invDepartureDate"></span> at <span id="invDepartureTime"></span></p>
+                <p><strong>No. of Pax:</strong> <span id="invPax"></span></p>
+            </div>
+        </div>
+        
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Room No</th>
+                    <th>Description</th>
+                    <th>Plan</th>
+                    <th>Occupancy</th>
+                    <th>Rate</th>
+                    <th>Days</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody id="invTableBody">
+                <!-- Will be populated by JavaScript -->
+            </tbody>
+        </table>
+        
+        <div class="signature-area">
+            <div class="signature-box">
+                <p>Guest Signature</p>
+            </div>
+            <div class="signature-box">
+                <p>Receptionist Signature</p>
+            </div>
+        </div>
+        
+        <div class="watermark">
+            <p>This invoice is generated by devəliSH</p>
+        </div>
+        
+        <div style="margin-top: 20px; font-size: 12px;">
+            <p>Front Office - Cheque/DD should be made in favour of "Hotel Metteyye Residency"</p>
+            <p>All Disputes are subject to Kushinagar jurisdiction only.</p>
+            <p>Credit bills if not settled within 15 days of receipt of bill, an interest @ 18% P.A will be charged on the bill amount and further credit will be stopped.</p>
+            <p>I agree that I am liable for the full payment of this bill. If it is not paid by company/organisation person indicated.</p>
+            <p>I have collected my luggage/Articles/belonging at the time of checkout.</p>
+            <p>Computer Generated Bill Signature not Required.</p>
+        </div>
+    </div>
+
+    <script>
+        // Wait for the jsPDF library to load
+        window.jsPDF = window.jspdf.jsPDF;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('invoiceForm');
+            const advancePaymentInput = document.getElementById('advancePayment');
+            const discountInput = document.getElementById('discount');
+            const invoiceContainer = document.getElementById('invoice');
+            const generateBtn = document.getElementById('generateInvoice');
+            const printBtn = document.getElementById('printInvoice');
+            const pdfBtn = document.getElementById('generatePdf');
+            const saveToSheetsBtn = document.getElementById('saveToSheets');
+            const addMealPlanBtn = document.getElementById('addMealPlan');
+            const addRoomChargeBtn = document.getElementById('addRoomCharge');
+            const mealPlansContainer = document.getElementById('mealPlansContainer');
+            const roomChargesContainer = document.getElementById('roomChargesContainer');
+            const billNumberInput = document.getElementById('billNumber');
+            const generateBillNumberBtn = document.getElementById('generateBillNumber');
+            const billDateInput = document.getElementById('billDate');
+            const billTypeSelect = document.getElementById('billType');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Food bill elements
+            const foodBillNumberInput = document.getElementById('foodBillNumber');
+            const generateFoodBillNumberBtn = document.getElementById('generateFoodBillNumber');
+            const foodBillDateInput = document.getElementById('foodBillDate');
+            const foodItemsContainer = document.getElementById('foodItemsContainer');
+            const addFoodItemBtn = document.getElementById('addFoodItem');
+            const foodDiscountInput = document.getElementById('foodDiscount');
+            
+            // Tab switching functionality
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Show corresponding content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-content`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Initialize bill number and date
+            initializeBillNumber();
+            initializeFoodBillNumber();
+            
+            // Set current date as default for bill date and arrival
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            billDateInput.value = formattedDate;
+            foodBillDateInput.value = formattedDate;
+            document.getElementById('arrivalDate').value = formattedDate;
+            
+            // Calculate tomorrow's date for departure
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const formattedTomorrow = tomorrow.toISOString().split('T')[0];
+            document.getElementById('departureDate').value = formattedTomorrow;
+            
+            // Set default time (12:00 PM)
+            document.getElementById('arrivalTime').value = '12:00';
+            document.getElementById('departureTime').value = '12:00';
+            
+            // Calculate days based on arrival and departure dates
+            document.getElementById('arrivalDate').addEventListener('change', updateDays);
+            document.getElementById('departureDate').addEventListener('change', updateDays);
+            
+            function updateDays() {
+                const arrivalDate = new Date(document.getElementById('arrivalDate').value);
+                const departureDate = new Date(document.getElementById('departureDate').value);
+                
+                if (arrivalDate && departureDate && departureDate > arrivalDate) {
+                    const diffTime = Math.abs(departureDate - arrivalDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    // Update all room day inputs
+                    const roomDayInputs = document.querySelectorAll('.room-days');
+                    roomDayInputs.forEach(input => {
+                        input.value = diffDays;
+                    });
+                    
+                    updateCalculations();
+                }
+            }
+            
+            // Update calculations when values change
+            advancePaymentInput.addEventListener('input', updateCalculations);
+            discountInput.addEventListener('input', updateCalculations);
+            foodDiscountInput.addEventListener('input', updateFoodCalculations);
+            
+            // Add event listeners to room charge inputs
+            roomChargesContainer.addEventListener('input', function(e) {
+                if (e.target.classList.contains('room-rate') || e.target.classList.contains('room-days')) {
+                    updateCalculations();
+                }
+            });
+            
+            // Add event listeners to meal plan inputs
+            mealPlansContainer.addEventListener('input', function(e) {
+                if (e.target.classList.contains('meal-quantity') || e.target.classList.contains('meal-rate')) {
+                    updateCalculations();
+                }
+            });
+            
+            // Add event listeners to food item inputs
+            foodItemsContainer.addEventListener('input', function(e) {
+                if (e.target.classList.contains('food-item-quantity') || e.target.classList.contains('food-item-rate')) {
+                    updateFoodCalculations();
+                }
+            });
+            
+            function updateCalculations() {
+                const advancePayment = parseFloat(advancePaymentInput.value) || 0;
+                const discount = parseFloat(discountInput.value) || 0;
+                
+                // Calculate room charges from all room entries
+                let roomCharges = 0;
+                const roomChargeRows = roomChargesContainer.querySelectorAll('.room-charge-row');
+                roomChargeRows.forEach(row => {
+                    const rateInclusive = parseFloat(row.querySelector('.room-rate').value) || 0;
+                    // Calculate exclusive rate (reverse 12% GST)
+                    const rateExclusive = rateInclusive / 1.12;
+                    const days = parseFloat(row.querySelector('.room-days').value) || 0;
+                    roomCharges += rateExclusive * days;
+                });
+                
+                // Calculate additional charges from meal plans
+                let additionalCharges = 0;
+                const mealPlanRows = mealPlansContainer.querySelectorAll('.meal-plan-row');
+                mealPlanRows.forEach(row => {
+                    const quantity = parseFloat(row.querySelector('.meal-quantity').value) || 0;
+                    const rate = parseFloat(row.querySelector('.meal-rate').value) || 0;
+                    additionalCharges += quantity * rate;
+                });
+                
+                // Calculate subtotal
+                const subtotal = roomCharges + additionalCharges;
+                
+                // Calculate taxes
+                const cgst = subtotal * 0.06;
+                const sgst = subtotal * 0.06;
+                
+                // Calculate total
+                const totalAmount = subtotal + cgst + sgst;
+                
+                // Calculate balance
+                const balance = totalAmount - discount - advancePayment;
+                
+                // Update display
+                document.getElementById('roomChargesDisplay').textContent = '₹' + roomCharges.toFixed(2);
+                document.getElementById('additionalChargesDisplay').textContent = '₹' + additionalCharges.toFixed(2);
+                document.getElementById('subtotalDisplay').textContent = '₹' + subtotal.toFixed(2);
+                document.getElementById('cgstDisplay').textContent = '₹' + cgst.toFixed(2);
+                document.getElementById('sgstDisplay').textContent = '₹' + sgst.toFixed(2);
+                document.getElementById('totalAmountDisplay').textContent = '₹' + totalAmount.toFixed(2);
+                document.getElementById('discountDisplay').textContent = '₹' + discount.toFixed(2);
+                document.getElementById('advanceDisplay').textContent = '₹' + advancePayment.toFixed(2);
+                document.getElementById('balanceDisplay').textContent = '₹' + balance.toFixed(2);
+            }
+            
+            function updateFoodCalculations() {
+                const discount = parseFloat(foodDiscountInput.value) || 0;
+                
+                // Calculate food items total
+                let foodTotal = 0;
+                const foodItemRows = foodItemsContainer.querySelectorAll('.meal-plan-row');
+                foodItemRows.forEach(row => {
+                    const quantity = parseFloat(row.querySelector('.food-item-quantity').value) || 0;
+                    const rate = parseFloat(row.querySelector('.food-item-rate').value) || 0;
+                    foodTotal += quantity * rate;
+                });
+                
+                // Calculate CGST (2.5%) and SGST (2.5%)
+                const cgst = foodTotal * 0.025;
+                const sgst = foodTotal * 0.025;
+                
+                // Calculate total amount
+                const totalAmount = foodTotal + cgst + sgst - discount;
+                
+                // Update display
+                document.getElementById('foodTotalDisplay').textContent = '₹' + foodTotal.toFixed(2);
+                document.getElementById('foodCgstDisplay').textContent = '₹' + cgst.toFixed(2);
+                document.getElementById('foodSgstDisplay').textContent = '₹' + sgst.toFixed(2);
+                document.getElementById('foodDiscountDisplay').textContent = '₹' + discount.toFixed(2);
+                document.getElementById('foodTotalAmountDisplay').textContent = '₹' + totalAmount.toFixed(2);
+            }
+            
+            // Add room charge row
+            addRoomChargeBtn.addEventListener('click', function() {
+                const newRow = document.createElement('div');
+                newRow.className = 'room-charge-row';
+                newRow.innerHTML = `
+                    <input type="text" class="room-number" placeholder="Room Number" required>
+                    <select class="room-plan">
+                        <option value="EP">EP (European Plan)</option>
+                        <option value="CP">CP (Continental Plan)</option>
+                        <option value="MAP">MAP (Modified American Plan)</option>
+                        <option value="AP">AP (American Plan)</option>
+                        <option value="CPAI">CPAI (Continental Plan with AI)</option>
+                        <option value="MAPAI">MAPAI (Modified American Plan with AI)</option>
+                        <option value="APAI">APAI (American Plan with AI)</option>
+                    </select>
+                    <select class="room-occupancy">
+                        <option value="1">Single</option>
+                        <option value="2">Double</option>
+                        <option value="3">Triple</option>
+                        <option value="4">Quad</option>
+                    </select>
+                    <input type="number" class="room-rate" placeholder="Rate per day" min="0" step="0.01" required>
+                    <input type="number" class="room-days" placeholder="Days" min="1" value="1" required>
+                    <button type="button" class="remove-btn">×</button>
+                `;
+                roomChargesContainer.appendChild(newRow);
+                
+                // Set days value based on arrival/departure
+                const arrivalDate = new Date(document.getElementById('arrivalDate').value);
+                const departureDate = new Date(document.getElementById('departureDate').value);
+                if (arrivalDate && departureDate && departureDate > arrivalDate) {
+                    const diffTime = Math.abs(departureDate - arrivalDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    newRow.querySelector('.room-days').value = diffDays;
+                }
+                
+                // Add event listener to remove button
+                newRow.querySelector('.remove-btn').addEventListener('click', function() {
+                    if (roomChargesContainer.querySelectorAll('.room-charge-row').length > 1) {
+                        roomChargesContainer.removeChild(newRow);
+                        updateCalculations();
+                    }
+                });
+                
+                // Add event listeners to inputs
+                newRow.querySelector('.room-rate').addEventListener('input', updateCalculations);
+                newRow.querySelector('.room-days').addEventListener('input', updateCalculations);
+            });
+            
+            // Add meal plan row
+            addMealPlanBtn.addEventListener('click', function() {
+                const newRow = document.createElement('div');
+                newRow.className = 'meal-plan-row';
+                newRow.innerHTML = `
+                    <select class="meal-type">
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Lunch">Lunch</option>
+                        <option value="Dinner">Dinner</option>
+                        <option value="Snacks">Snacks</option>
+                        <option value="Other">Other Service</option>
+                    </select>
+                    <input type="number" class="meal-quantity" placeholder="Qty" min="1" value="1">
+                    <input type="number" class="meal-rate" placeholder="Rate" min="0" step="0.01">
+                    <input type="text" class="meal-description" placeholder="Description">
+                    <button type="button" class="remove-btn">×</button>
+                `;
+                mealPlansContainer.appendChild(newRow);
+                
+                // Add event listener to remove button
+                newRow.querySelector('.remove-btn').addEventListener('click', function() {
+                    mealPlansContainer.removeChild(newRow);
+                    updateCalculations();
+                });
+            });
+            
+            // Add food item row
+            addFoodItemBtn.addEventListener('click', function() {
+                const newRow = document.createElement('div');
+                newRow.className = 'meal-plan-row';
+                newRow.innerHTML = `
+                    <input type="text" class="food-item-name" placeholder="Item Name" required>
+                    <input type="number" class="food-item-quantity" placeholder="Qty" min="1" value="1" required>
+                    <input type="number" class="food-item-rate" placeholder="Rate" min="0" step="0.01" required>
+                    <button type="button" class="remove-btn">×</button>
+                `;
+                foodItemsContainer.appendChild(newRow);
+                
+                // Add event listener to remove button
+                newRow.querySelector('.remove-btn').addEventListener('click', function() {
+                    if (foodItemsContainer.querySelectorAll('.meal-plan-row').length > 1) {
+                        foodItemsContainer.removeChild(newRow);
+                        updateFoodCalculations();
+                    }
+                });
+                
+                // Add event listeners to inputs
+                newRow.querySelector('.food-item-quantity').addEventListener('input', updateFoodCalculations);
+                newRow.querySelector('.food-item-rate').addEventListener('input', updateFoodCalculations);
+            });
+            
+            // Add event listener to initial remove buttons
+            const initialRoomRemoveBtn = roomChargesContainer.querySelector('.remove-btn');
+            if (initialRoomRemoveBtn) {
+                initialRoomRemoveBtn.addEventListener('click', function() {
+                    if (roomChargesContainer.querySelectorAll('.room-charge-row').length > 1) {
+                        roomChargesContainer.removeChild(initialRoomRemoveBtn.parentElement);
+                        updateCalculations();
+                    }
+                });
+            }
+            
+            const initialMealRemoveBtn = mealPlansContainer.querySelector('.remove-btn');
+            if (initialMealRemoveBtn) {
+                initialMealRemoveBtn.addEventListener('click', function() {
+                    if (mealPlansContainer.querySelectorAll('.meal-plan-row').length > 1) {
+                        mealPlansContainer.removeChild(initialMealRemoveBtn.parentElement);
+                        updateCalculations();
+                    }
+                });
+            }
+            
+            const initialFoodRemoveBtn = foodItemsContainer.querySelector('.remove-btn');
+            if (initialFoodRemoveBtn) {
+                initialFoodRemoveBtn.addEventListener('click', function() {
+                    if (foodItemsContainer.querySelectorAll('.meal-plan-row').length > 1) {
+                        foodItemsContainer.removeChild(initialFoodRemoveBtn.parentElement);
+                        updateFoodCalculations();
+                    }
+                });
+            }
+            
+            // Generate bill number
+            generateBillNumberBtn.addEventListener('click', initializeBillNumber);
+            
+            function initializeBillNumber() {
+                // Get current year
+                const year = new Date().getFullYear();
+                
+                // Try to get the last bill number from localStorage
+                let lastBillNumber = localStorage.getItem('lastBillNumber');
+                
+                if (!lastBillNumber) {
+                    // If no bill number exists, start with 1 for the current year
+                    lastBillNumber = 1;
+                } else {
+                    // Check if the stored bill number is from a previous year
+                    const storedYear = parseInt(lastBillNumber.toString().split('/')[1]);
+                    if (storedYear !== year) {
+                        // Reset to 1 for the new year
+                        lastBillNumber = 1;
+                    } else {
+                        // Increment the bill number
+                        lastBillNumber = parseInt(lastBillNumber.toString().split('/')[0]) + 1;
+                    }
+                }
+                
+                // Format the bill number with leading zeros (e.g., 0001/2024)
+                const formattedBillNumber = lastBillNumber.toString().padStart(4, '0') + '/' + year;
+                
+                // Set the bill number input value
+                billNumberInput.value = formattedBillNumber;
+                
+                // Store the updated bill number in localStorage
+                localStorage.setItem('lastBillNumber', lastBillNumber);
+            }
+            
+            // Generate food bill number
+            generateFoodBillNumberBtn.addEventListener('click', initializeFoodBillNumber);
+            
+            function initializeFoodBillNumber() {
+                // Get current year
+                const year = new Date().getFullYear();
+                
+                // Try to get the last food bill number from localStorage
+                let lastFoodBillNumber = localStorage.getItem('lastFoodBillNumber');
+                
+                if (!lastFoodBillNumber) {
+                    // If no bill number exists, start with 1 for the current year
+                    lastFoodBillNumber = 1;
+                } else {
+                    // Check if the stored bill number is from a previous year
+                    const storedYear = parseInt(lastFoodBillNumber.toString().split('/')[1]);
+                    if (storedYear !== year) {
+                        // Reset to 1 for the new year
+                        lastFoodBillNumber = 1;
+                    } else {
+                        // Increment the bill number
+                        lastFoodBillNumber = parseInt(lastFoodBillNumber.toString().split('/')[0]) + 1;
+                    }
+                }
+                
+                // Format the bill number with leading zeros (e.g., FB0001/2024)
+                const formattedBillNumber = 'FB' + lastFoodBillNumber.toString().padStart(4, '0') + '/' + year;
+                
+                // Set the bill number input value
+                foodBillNumberInput.value = formattedBillNumber;
+                
+                // Store the updated bill number in localStorage
+                localStorage.setItem('lastFoodBillNumber', lastFoodBillNumber);
+            }
+            
+            // Generate invoice
+            generateBtn.addEventListener('click', function() {
+                // Check which tab is active
+                const activeTab = document.querySelector('.tab.active').getAttribute('data-tab');
+                
+                if (activeTab === 'main-bill') {
+                    if (!validateMainBillForm()) {
+                        alert('Please fill in all required fields correctly.');
+                        return;
+                    }
+                    generateInvoice();
+                } else if (activeTab === 'food-bill') {
+                    if (!validateFoodBillForm()) {
+                        alert('Please fill in all required fields correctly.');
+                        return;
+                    }
+                    generateFoodInvoice();
+                }
+            });
+            
+            function validateMainBillForm() {
+                const requiredFields = form.querySelectorAll('#main-bill-content [required]');
+                for (let field of requiredFields) {
+                    if (!field.value.trim()) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+            function validateFoodBillForm() {
+                const requiredFields = form.querySelectorAll('#food-bill-content [required]');
+                for (let field of requiredFields) {
+                    if (!field.value.trim()) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+            // Print invoice
+            printBtn.addEventListener('click', function() {
+                if (invoiceContainer.style.display !== 'block') {
+                    alert('Please generate the invoice first.');
+                    return;
+                }
+                
+                window.print();
+            });
+            
+            // Generate PDF
+            pdfBtn.addEventListener('click', function() {
+                // Check which tab is active
+                const activeTab = document.querySelector('.tab.active').getAttribute('data-tab');
+                
+                if (activeTab === 'main-bill') {
+                    if (!validateMainBillForm()) {
+                        alert('Please fill in all required fields correctly.');
+                        return;
+                    }
+                    generateInvoicePDF();
+                } else if (activeTab === 'food-bill') {
+                    if (!validateFoodBillForm()) {
+                        alert('Please fill in all required fields correctly.');
+                        return;
+                    }
+                    generateFoodInvoicePDF();
+                }
+            });
+            
+            // Save to Google Sheets
+            saveToSheetsBtn.addEventListener('click', function() {
+                // Check which tab is active
+                const activeTab = document.querySelector('.tab.active').getAttribute('data-tab');
+                
+                if (activeTab === 'main-bill') {
+                    if (!validateMainBillForm()) {
+                        alert('Please fill in all required fields correctly.');
+                        return;
+                    }
+                    saveMainBillToSheets();
+                } else if (activeTab === 'food-bill') {
+                    if (!validateFoodBillForm()) {
+                        alert('Please fill in all required fields correctly.');
+                        return;
+                    }
+                    saveFoodBillToSheets();
+                }
+            });
+            
+            // Reset form
+            form.addEventListener('reset', function() {
+                // Clear room charges except the first one
+                const roomChargeRows = roomChargesContainer.querySelectorAll('.room-charge-row');
+                for (let i = 1; i < roomChargeRows.length; i++) {
+                    roomChargesContainer.removeChild(roomChargeRows[i]);
+                }
+                
+                // Reset the first room charge
+                const firstRoomRow = roomChargesContainer.querySelector('.room-charge-row');
+                if (firstRoomRow) {
+                    firstRoomRow.querySelector('.room-number').value = '';
+                    firstRoomRow.querySelector('.room-plan').value = 'EP';
+                    firstRoomRow.querySelector('.room-occupancy').value = '1';
+                    firstRoomRow.querySelector('.room-rate').value = '';
+                    firstRoomRow.querySelector('.room-days').value = '1';
+                }
+                
+                // Clear meal plans except the first one
+                const mealPlanRows = mealPlansContainer.querySelectorAll('.meal-plan-row');
+                for (let i = 1; i < mealPlanRows.length; i++) {
+                    mealPlansContainer.removeChild(mealPlanRows[i]);
+                }
+                
+                // Reset the first meal plan
+                const firstMealRow = mealPlansContainer.querySelector('.meal-plan-row');
+                if (firstMealRow) {
+                    firstMealRow.querySelector('.meal-type').value = 'Breakfast';
+                    firstMealRow.querySelector('.meal-quantity').value = '1';
+                    firstMealRow.querySelector('.meal-rate').value = '';
+                    firstMealRow.querySelector('.meal-description').value = '';
+                }
+                
+                // Clear food items except the first one
+                const foodItemRows = foodItemsContainer.querySelectorAll('.meal-plan-row');
+                for (let i = 1; i < foodItemRows.length; i++) {
+                    foodItemsContainer.removeChild(foodItemRows[i]);
+                }
+                
+                // Reset the first food item
+                const firstFoodRow = foodItemsContainer.querySelector('.meal-plan-row');
+                if (firstFoodRow) {
+                    firstFoodRow.querySelector('.food-item-name').value = '';
+                    firstFoodRow.querySelector('.food-item-quantity').value = '1';
+                    firstFoodRow.querySelector('.food-item-rate').value = '';
+                }
+                
+                // Hide invoice
+                invoiceContainer.style.display = 'none';
+                
+                // Reset bill numbers
+                initializeBillNumber();
+                initializeFoodBillNumber();
+                
+                // Reset calculations
+                setTimeout(updateCalculations, 100);
+                setTimeout(updateFoodCalculations, 100);
+            });
+            
+            function generateInvoice() {
+                // Get form values
+                const billNumber = document.getElementById('billNumber').value;
+                const billDate = document.getElementById('billDate').value;
+                const guestName = document.getElementById('guestName').value;
+                const address = document.getElementById('address').value;
+                const phone = document.getElementById('phone').value;
+                const nationality = document.getElementById('nationality').value;
+                const gstin = document.getElementById('gstin').value;
+                const company = document.getElementById('company').value;
+                const grcNumber = document.getElementById('grcNumber').value;
+                const arrivalDate = document.getElementById('arrivalDate').value;
+                const arrivalTime = document.getElementById('arrivalTime').value;
+                const departureDate = document.getElementById('departureDate').value;
+                const departureTime = document.getElementById('departureTime').value;
+                const pax = document.getElementById('pax').value;
+                const advancePayment = parseFloat(document.getElementById('advancePayment').value) || 0;
+                const discount = parseFloat(document.getElementById('discount').value) || 0;
+                const discountReason = document.getElementById('discountReason').value;
+                const paymentMode = document.getElementById('paymentMode').value;
+                
+                // Get room charges data
+                const roomCharges = [];
+                const roomChargeRows = roomChargesContainer.querySelectorAll('.room-charge-row');
+                roomChargeRows.forEach(row => {
+                    const roomNumber = row.querySelector('.room-number').value;
+                    const plan = row.querySelector('.room-plan').value;
+                    const occupancy = row.querySelector('.room-occupancy').value;
+                    const rateInclusive = parseFloat(row.querySelector('.room-rate').value) || 0;
+                    // Calculate exclusive rate (reverse 12% GST)
+                    const rateExclusive = rateInclusive / 1.12;
+                    const days = parseFloat(row.querySelector('.room-days').value) || 0;
+                    
+                    if (roomNumber && rateInclusive > 0 && days > 0) {
+                        roomCharges.push({
+                            roomNumber,
+                            plan,
+                            occupancy,
+                            rateInclusive,
+                            rateExclusive,
+                            days,
+                            amount: rateExclusive * days
+                        });
+                    }
+                });
+                
+                // Get meal plan data
+                const mealPlans = [];
+                const mealPlanRows = mealPlansContainer.querySelectorAll('.meal-plan-row');
+                mealPlanRows.forEach(row => {
+                    const type = row.querySelector('.meal-type').value;
+                    const quantity = parseFloat(row.querySelector('.meal-quantity').value) || 0;
+                    const rate = parseFloat(row.querySelector('.meal-rate').value) || 0;
+                    const description = row.querySelector('.meal-description').value || type;
+                    
+                    if (rate > 0) {
+                        mealPlans.push({
+                            type,
+                            quantity,
+                            rate,
+                            description,
+                            amount: quantity * rate
+                        });
+                    }
+                });
+                
+                // Calculate total room charges
+                let totalRoomCharges = 0;
+                roomCharges.forEach(room => {
+                    totalRoomCharges += room.amount;
+                });
+                
+                // Calculate additional charges
+                let additionalCharges = 0;
+                mealPlans.forEach(meal => {
+                    additionalCharges += meal.amount;
+                });
+                
+                // Calculate subtotal
+                const subtotal = totalRoomCharges + additionalCharges;
+                
+                // Calculate taxes
+                const cgst = subtotal * 0.06;
+                const sgst = subtotal * 0.06;
+                
+                // Calculate total
+                const totalAmount = subtotal + cgst + sgst;
+                
+                // Calculate balance
+                const balance = totalAmount - discount - advancePayment;
+                
+                // Format dates
+                const formattedArrivalDate = formatDate(arrivalDate);
+                const formattedDepartureDate = formatDate(departureDate);
+                const formattedBillDate = formatDate(billDate);
+                
+                // Update invoice with data
+                document.getElementById('invBillNo').textContent = billNumber;
+                document.getElementById('invDate').textContent = formattedBillDate;
+                document.getElementById('invGrcNo').textContent = grcNumber;
+                document.getElementById('invPaymentMode').textContent = paymentMode;
+                document.getElementById('invGuestName').textContent = guestName;
+                document.getElementById('invAddress').textContent = address;
+                document.getElementById('invPhone').textContent = phone;
+                document.getElementById('invNationality').textContent = nationality;
+                document.getElementById('invGstin').textContent = gstin || 'N/A';
+                document.getElementById('invCompany').textContent = company || 'N/A';
+                document.getElementById('invArrivalDate').textContent = formattedArrivalDate;
+                document.getElementById('invArrivalTime').textContent = formatTime(arrivalTime);
+                document.getElementById('invDepartureDate').textContent = formattedDepartureDate;
+                document.getElementById('invDepartureTime').textContent = formatTime(departureTime);
+                document.getElementById('invPax').textContent = pax;
+                
+                // Build table rows
+                const tableBody = document.getElementById('invTableBody');
+                tableBody.innerHTML = '';
+                
+                // Add room charge rows
+                roomCharges.forEach(room => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${room.roomNumber}</td>
+                        <td>Room Charge</td>
+                        <td>${room.plan}</td>
+                        <td>${getOccupancyText(room.occupancy)}</td>
+                        <td>₹${room.rateExclusive.toFixed(2)}</td>
+                        <td>${room.days}</td>
+                        <td>₹${room.amount.toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // Add meal plan rows
+                mealPlans.forEach(meal => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>-</td>
+                        <td>${meal.description}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>₹${meal.rate.toFixed(2)}</td>
+                        <td>${meal.quantity}</td>
+                        <td>₹${meal.amount.toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // Add total row
+                const totalRow = document.createElement('tr');
+                totalRow.innerHTML = `
+                    <td colspan="6" style="text-align: right;"><strong>Subtotal</strong></td>
+                    <td><strong>₹${subtotal.toFixed(2)}</strong></td>
+                `;
+                tableBody.appendChild(totalRow);
+                
+                // Add tax rows
+                const taxRow2 = document.createElement('tr');
+                taxRow2.innerHTML = `
+                    <td colspan="6" style="text-align: right;">ADD CGST 6%</td>
+                    <td>₹${cgst.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(taxRow2);
+                
+                const taxRow3 = document.createElement('tr');
+                taxRow3.innerHTML = `
+                    <td colspan="6" style="text-align: right;">ADD SGST 6%</td>
+                    <td>₹${sgst.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(taxRow3);
+                
+                const totalAmountRow = document.createElement('tr');
+                totalAmountRow.innerHTML = `
+                    <td colspan="6" style="text-align: right;"><strong>Total Amount</strong></td>
+                    <td><strong>₹${totalAmount.toFixed(2)}</strong></td>
+                `;
+                tableBody.appendChild(totalAmountRow);
+                
+                // Add discount row if applicable
+                if (discount > 0) {
+                    const discountRow = document.createElement('tr');
+                    discountRow.innerHTML = `
+                        <td colspan="6" style="text-align: right;">Discount${discountReason ? ` (${discountReason})` : ''}</td>
+                        <td>-₹${discount.toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(discountRow);
+                }
+                
+                // Add advance payment and balance if applicable
+                if (advancePayment > 0) {
+                    const advanceRow = document.createElement('tr');
+                    advanceRow.innerHTML = `
+                        <td colspan="6" style="text-align: right;">Advance Payment</td>
+                        <td>-₹${advancePayment.toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(advanceRow);
+                    
+                    const balanceRow = document.createElement('tr');
+                    balanceRow.innerHTML = `
+                        <td colspan="6" style="text-align: right;"><strong>Balance Due</strong></td>
+                        <td><strong>₹${balance.toFixed(2)}</strong></td>
+                    `;
+                    tableBody.appendChild(balanceRow);
+                }
+                
+                // Show the invoice
+                invoiceContainer.style.display = 'block';
+                
+                // Scroll to invoice
+                invoiceContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            function generateFoodInvoice() {
+                // Get form values
+                const billNumber = document.getElementById('foodBillNumber').value;
+                const billDate = document.getElementById('foodBillDate').value;
+                const customerName = document.getElementById('foodCustomerName').value;
+                const customerPhone = document.getElementById('foodCustomerPhone').value;
+                const discount = parseFloat(document.getElementById('foodDiscount').value) || 0;
+                const paymentMode = document.getElementById('foodPaymentMode').value;
+                
+                // Get food items data
+                const foodItems = [];
+                const foodItemRows = foodItemsContainer.querySelectorAll('.meal-plan-row');
+                foodItemRows.forEach(row => {
+                    const name = row.querySelector('.food-item-name').value;
+                    const quantity = parseFloat(row.querySelector('.food-item-quantity').value) || 0;
+                    const rate = parseFloat(row.querySelector('.food-item-rate').value) || 0;
+                    
+                    if (name && rate > 0) {
+                        foodItems.push({
+                            name,
+                            quantity,
+                            rate,
+                            amount: quantity * rate
+                        });
+                    }
+                });
+                
+                // Calculate food total
+                let foodTotal = 0;
+                foodItems.forEach(item => {
+                    foodTotal += item.amount;
+                });
+                
+                // Calculate CGST (2.5%) and SGST (2.5%)
+                const cgst = foodTotal * 0.025;
+                const sgst = foodTotal * 0.025;
+                
+                // Calculate total amount
+                const totalAmount = foodTotal + cgst + sgst - discount;
+                
+                // Format date
+                const formattedBillDate = formatDate(billDate);
+                
+                // Update invoice with data
+                document.getElementById('invBillNo').textContent = billNumber;
+                document.getElementById('invDate').textContent = formattedBillDate;
+                document.getElementById('invGrcNo').textContent = 'N/A';
+                document.getElementById('invPaymentMode').textContent = paymentMode;
+                document.getElementById('invGuestName').textContent = customerName;
+                document.getElementById('invAddress').textContent = 'N/A';
+                document.getElementById('invPhone').textContent = customerPhone || 'N/A';
+                document.getElementById('invNationality').textContent = 'N/A';
+                document.getElementById('invGstin').textContent = 'N/A';
+                document.getElementById('invCompany').textContent = 'N/A';
+                document.getElementById('invArrivalDate').textContent = 'N/A';
+                document.getElementById('invArrivalTime').textContent = 'N/A';
+                document.getElementById('invDepartureDate').textContent = 'N/A';
+                document.getElementById('invDepartureTime').textContent = 'N/A';
+                document.getElementById('invPax').textContent = 'N/A';
+                
+                // Build table rows
+                const tableBody = document.getElementById('invTableBody');
+                tableBody.innerHTML = '';
+                
+                // Add food item rows
+                foodItems.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>-</td>
+                        <td>${item.name}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>₹${item.rate.toFixed(2)}</td>
+                        <td>${item.quantity}</td>
+                        <td>₹${item.amount.toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                // Add food total row
+                const foodTotalRow = document.createElement('tr');
+                foodTotalRow.innerHTML = `
+                    <td colspan="6" style="text-align: right;"><strong>Food Total</strong></td>
+                    <td><strong>₹${foodTotal.toFixed(2)}</strong></td>
+                `;
+                tableBody.appendChild(foodTotalRow);
+                
+                // Add CGST row
+                const cgstRow = document.createElement('tr');
+                cgstRow.innerHTML = `
+                    <td colspan="6" style="text-align: right;">ADD CGST 2.5%</td>
+                    <td>₹${cgst.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(cgstRow);
+                
+                // Add SGST row
+                const sgstRow = document.createElement('tr');
+                sgstRow.innerHTML = `
+                    <td colspan="6" style="text-align: right;">ADD SGST 2.5%</td>
+                    <td>₹${sgst.toFixed(2)}</td>
+                `;
+                tableBody.appendChild(sgstRow);
+                
+                // Add discount row if applicable
+                if (discount > 0) {
+                    const discountRow = document.createElement('tr');
+                    discountRow.innerHTML = `
+                        <td colspan="6" style="text-align: right;">Discount</td>
+                        <td>-₹${discount.toFixed(2)}</td>
+                    `;
+                    tableBody.appendChild(discountRow);
+                }
+                
+                // Add total amount row
+                const totalAmountRow = document.createElement('tr');
+                totalAmountRow.innerHTML = `
+                    <td colspan="6" style="text-align: right;"><strong>Total Amount</strong></td>
+                    <td><strong>₹${totalAmount.toFixed(2)}</strong></td>
+                `;
+                tableBody.appendChild(totalAmountRow);
+                
+                // Show the invoice
+                invoiceContainer.style.display = 'block';
+                
+                // Scroll to invoice
+                invoiceContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            function generateInvoicePDF() {
+                // First generate the invoice
+                generateInvoice();
+                
+                // Get the invoice container content
+                const invoiceElement = document.getElementById('invoice');
+                
+                // Create a new jsPDF instance
+                const doc = new jsPDF();
+                
+                // Add hotel logo and information
+                doc.setFontSize(20);
+                doc.setTextColor(142, 68, 173);
+                doc.text("Hotel Metteyye Residency", 105, 15, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.setTextColor(52, 152, 219);
+                doc.text('"Feel Closer to Buddha"', 105, 22, { align: 'center' });
+                
+                doc.setFontSize(10);
+                doc.setTextColor(127, 140, 141);
+                doc.text("Buddha Marg, Kushinagar, Uttar Pradesh, India - 274403", 105, 28, { align: 'center' });
+                doc.text("Contact: +91 9219182689, 9818138203 | Email: Metteyyeresidencyhotel@gmail.com", 105, 33, { align: 'center' });
+                doc.text("Website: hotelmetteyyeresidency.com | GSTIN: 09AADCH6919B1ZO", 105, 38, { align: 'center' });
+                
+                // Add invoice title
+                doc.setFontSize(16);
+                doc.setTextColor(0, 0, 0);
+                doc.text("INVOICE", 105, 50, { align: 'center' });
+                
+                // Add bill number and date
+                const billNo = document.getElementById('invBillNo').textContent;
+                const date = document.getElementById('invDate').textContent;
+                const paymentMode = document.getElementById('invPaymentMode').textContent;
+                doc.setFontSize(10);
+                doc.text(`Bill No: ${billNo}`, 20, 60);
+                doc.text(`Date: ${date}`, 20, 65);
+                doc.text(`Payment Mode: ${paymentMode}`, 20, 70);
+                
+                // Add guest information
+                const guestName = document.getElementById('invGuestName').textContent;
+                const address = document.getElementById('invAddress').textContent;
+                const phone = document.getElementById('invPhone').textContent;
+                const nationality = document.getElementById('invNationality').textContent;
+                const gstin = document.getElementById('invGstin').textContent;
+                const company = document.getElementById('invCompany').textContent;
+                const grcNo = document.getElementById('invGrcNo').textContent;
+                
+                doc.text(`Name: ${guestName}`, 20, 80);
+                doc.text(`Address: ${address}`, 20, 85);
+                doc.text(`Phone: ${phone}`, 20, 90);
+                doc.text(`Nationality: ${nationality}`, 20, 95);
+                doc.text(`GSTIN: ${gstin}`, 20, 100);
+                doc.text(`Company: ${company}`, 20, 105);
+                doc.text(`GRC No: ${grcNo}`, 20, 110);
+                
+                // Add stay information
+                const arrivalDate = document.getElementById('invArrivalDate').textContent;
+                const arrivalTime = document.getElementById('invArrivalTime').textContent;
+                const departureDate = document.getElementById('invDepartureDate').textContent;
+                const departureTime = document.getElementById('invDepartureTime').textContent;
+                const pax = document.getElementById('invPax').textContent;
+                
+                doc.text(`Arrival Date: ${arrivalDate}`, 110, 80);
+                doc.text(`Arrival Time: ${arrivalTime}`, 110, 85);
+                doc.text(`Departure Date: ${departureDate}`, 110, 90);
+                doc.text(`Departure Time: ${departureTime}`, 110, 95);
+                doc.text(`No of Pax: ${pax}`, 110, 100);
+                
+                // Create table data from the invoice table
+                const tableColumn = ["Room No", "Description", "Plan", "Occupancy", "Rate", "Days", "Amount"];
+                const tableRows = [];
+                
+                const rows = document.querySelectorAll('#invTableBody tr');
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    const rowData = [];
+                    cells.forEach(cell => {
+                        rowData.push(cell.textContent);
+                    });
+                    tableRows.push(rowData);
+                });
+                
+                // Generate table
+                doc.autoTable({
+                    startY: 120,
+                    head: [tableColumn],
+                    body: tableRows,
+                    theme: 'grid',
+                    styles: { fontSize: 8 },
+                    headStyles: { fillColor: [142, 68, 173] }
+                });
+                
+                // Add signature areas
+                const finalY = doc.lastAutoTable.finalY + 20;
+                doc.setFontSize(10);
+                doc.text("Guest Signature", 40, finalY);
+                doc.text("Receptionist Signature", 140, finalY);
+                
+                doc.line(40, finalY + 5, 80, finalY + 5);
+                doc.line(140, finalY + 5, 180, finalY + 5);
+                
+                // Add watermark
+                doc.setFontSize(8);
+                doc.setTextColor(200, 200, 200);
+                doc.text("This invoice is generated by devəliSH", 180, doc.internal.pageSize.height - 10, { align: 'right' });
+                
+                // Add footer text
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(8);
+                doc.text("Front Office - Cheque/DD should be made in favour of \"Hotel Metteyye Residency\"", 20, finalY + 15);
+                doc.text("All Disputes are subject to Kushinagar jurisdiction only.", 20, finalY + 20);
+                doc.text("Credit bills if not settled within 15 days of receipt of bill, an interest @ 18% P.A will be charged", 20, finalY + 25);
+                doc.text("on the bill amount and further credit will be stopped.", 20, finalY + 30);
+                doc.text("I agree that I am liable for the full payment of this bill. If it is not paid by company/organisation person indicated.", 20, finalY + 35);
+                doc.text("I have collected my luggage/Articles/belonging at the time of checkout.", 20, finalY + 40);
+                doc.text("Computer Generated Bill Signature not Required.", 20, finalY + 45);
+                
+                // Save the PDF
+                const guestNameForFile = guestName.replace(/\s+/g, '_');
+                doc.save(`Invoice_${billNo.replace(/\//g, '_')}_${guestNameForFile}.pdf`);
+            }
+            
+            function generateFoodInvoicePDF() {
+                // First generate the invoice
+                generateFoodInvoice();
+                
+                // Get the invoice container content
+                const invoiceElement = document.getElementById('invoice');
+                
+                // Create a new jsPDF instance
+                const doc = new jsPDF();
+                
+                // Add hotel logo and information
+                doc.setFontSize(20);
+                doc.setTextColor(142, 68, 173);
+                doc.text("Hotel Metteyye Residency", 105, 15, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.setTextColor(52, 152, 219);
+                doc.text('"Feel Closer to Buddha"', 105, 22, { align: 'center' });
+                
+                doc.setFontSize(10);
+                doc.setTextColor(127, 140, 141);
+                doc.text("Buddha Marg, Kushinagar, Uttar Pradesh, India - 274402", 105, 28, { align: 'center' });
+                doc.text("Contact: +91 9219182689, 9818138203 | Email: Metteyyeresidencyhotel@gmail.com", 105, 33, { align: 'center' });
+                doc.text("Website: hotelmetteyyeresidency.com | GSTIN: 09AADCH6919B1ZO", 105, 38, { align: 'center' });
+                
+                // Add invoice title
+                doc.setFontSize(16);
+                doc.setTextColor(0, 0, 0);
+                doc.text("FOOD BILL", 105, 50, { align: 'center' });
+                
+                // Add bill number and date
+                const billNo = document.getElementById('invBillNo').textContent;
+                const date = document.getElementById('invDate').textContent;
+                const paymentMode = document.getElementById('invPaymentMode').textContent;
+                doc.setFontSize(10);
+                doc.text(`Bill No: ${billNo}`, 20, 60);
+                doc.text(`Date: ${date}`, 20, 65);
+                doc.text(`Payment Mode: ${paymentMode}`, 20, 70);
+                
+                // Add customer information
+                const customerName = document.getElementById('invGuestName').textContent;
+                const phone = document.getElementById('invPhone').textContent;
+                
+                doc.text(`Customer Name: ${customerName}`, 20, 80);
+                doc.text(`Phone: ${phone}`, 20, 85);
+                
+                // Create table data from the invoice table
+                const tableColumn = ["Item", "Description", "Qty", "Rate", "Amount"];
+                const tableRows = [];
+                
+                const rows = document.querySelectorAll('#invTableBody tr');
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    // Skip total rows
+                    if (cells.length === 7) {
+                        const rowData = [
+                            cells[0].textContent,
+                            cells[1].textContent,
+                            cells[5].textContent,
+                            cells[4].textContent,
+                            cells[6].textContent
+                        ];
+                        tableRows.push(rowData);
+                    }
+                });
+                
+                // Generate table
+                doc.autoTable({
+                    startY: 95,
+                    head: [tableColumn],
+                    body: tableRows,
+                    theme: 'grid',
+                    styles: { fontSize: 8 },
+                    headStyles: { fillColor: [142, 68, 173] }
+                });
+                
+                // Add signature areas
+                const finalY = doc.lastAutoTable.finalY + 20;
+                doc.setFontSize(10);
+                doc.text("Customer Signature", 40, finalY);
+                doc.text("Cashier Signature", 140, finalY);
+                
+                doc.line(40, finalY + 5, 80, finalY + 5);
+                doc.line(140, finalY + 5, 180, finalY + 5);
+                
+                // Add watermark
+                doc.setFontSize(8);
+                doc.setTextColor(200, 200, 200);
+                doc.text("This invoice is generated by devəliSH", 180, doc.internal.pageSize.height - 10, { align: 'right' });
+                
+                // Save the PDF
+                const customerNameForFile = customerName.replace(/\s+/g, '_');
+                doc.save(`Food_Bill_${billNo.replace(/\//g, '_')}_${customerNameForFile}.pdf`);
+            }
+            
+            function saveMainBillToSheets() {
+                // Get form values
+                const billNumber = document.getElementById('billNumber').value;
+                const billDate = document.getElementById('billDate').value;
+                const guestName = document.getElementById('guestName').value;
+                const address = document.getElementById('address').value;
+                const phone = document.getElementById('phone').value;
+                const nationality = document.getElementById('nationality').value;
+                const gstin = document.getElementById('gstin').value;
+                const company = document.getElementById('company').value;
+                const grcNumber = document.getElementById('grcNumber').value;
+                const arrivalDate = document.getElementById('arrivalDate').value;
+                const arrivalTime = document.getElementById('arrivalTime').value;
+                const departureDate = document.getElementById('departureDate').value;
+                const departureTime = document.getElementById('departureTime').value;
+                const pax = document.getElementById('pax').value;
+                const advancePayment = parseFloat(document.getElementById('advancePayment').value) || 0;
+                const discount = parseFloat(document.getElementById('discount').value) || 0;
+                const discountReason = document.getElementById('discountReason').value;
+                const paymentMode = document.getElementById('paymentMode').value;
+                
+                // Get room charges data
+                const roomCharges = [];
+                const roomChargeRows = roomChargesContainer.querySelectorAll('.room-charge-row');
+                roomChargeRows.forEach(row => {
+                    const roomNumber = row.querySelector('.room-number').value;
+                    const plan = row.querySelector('.room-plan').value;
+                    const occupancy = row.querySelector('.room-occupancy').value;
+                    const rateInclusive = parseFloat(row.querySelector('.room-rate').value) || 0;
+                    const rateExclusive = rateInclusive / 1.12;
+                    const days = parseFloat(row.querySelector('.room-days').value) || 0;
+                    
+                    if (roomNumber && rateInclusive > 0 && days > 0) {
+                        roomCharges.push({
+                            roomNumber,
+                            plan,
+                            occupancy,
+                            rateInclusive,
+                            rateExclusive,
+                            days,
+                            amount: rateExclusive * days
+                        });
+                    }
+                });
+                
+                // Get meal plan data
+                const mealPlans = [];
+                const mealPlanRows = mealPlansContainer.querySelectorAll('.meal-plan-row');
+                mealPlanRows.forEach(row => {
+                    const type = row.querySelector('.meal-type').value;
+                    const quantity = parseFloat(row.querySelector('.meal-quantity').value) || 0;
+                    const rate = parseFloat(row.querySelector('.meal-rate').value) || 0;
+                    const description = row.querySelector('.meal-description').value || type;
+                    
+                    if (rate > 0) {
+                        mealPlans.push({
+                            type,
+                            quantity,
+                            rate,
+                            description,
+                            amount: quantity * rate
+                        });
+                    }
+                });
+                
+                // Calculate totals
+                let totalRoomCharges = 0;
+                roomCharges.forEach(room => {
+                    totalRoomCharges += room.amount;
+                });
+                
+                let additionalCharges = 0;
+                mealPlans.forEach(meal => {
+                    additionalCharges += meal.amount;
+                });
+                
+                const subtotal = totalRoomCharges + additionalCharges;
+                const cgst = subtotal * 0.06;
+                const sgst = subtotal * 0.06;
+                const totalAmount = subtotal + cgst + sgst;
+                const balance = totalAmount - discount - advancePayment;
+                
+                // Prepare data for Google Sheets
+                const data = {
+                    billType: 'Main Bill',
+                    billNumber,
+                    billDate,
+                    guestName,
+                    address,
+                    phone,
+                    nationality,
+                    gstin,
+                    company,
+                    grcNumber,
+                    arrivalDate,
+                    arrivalTime,
+                    departureDate,
+                    departureTime,
+                    pax,
+                    roomCharges: JSON.stringify(roomCharges),
+                    mealPlans: JSON.stringify(mealPlans),
+                    subtotal,
+                    cgst,
+                    sgst,
+                    totalAmount,
+                    discount,
+                    discountReason,
+                    advancePayment,
+                    balance,
+                    paymentMode,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Send data to Google Sheets
+                sendDataToGoogleSheets(data);
+            }
+            
+            function saveFoodBillToSheets() {
+                // Get form values
+                const billNumber = document.getElementById('foodBillNumber').value;
+                const billDate = document.getElementById('foodBillDate').value;
+                const customerName = document.getElementById('foodCustomerName').value;
+                const customerPhone = document.getElementById('foodCustomerPhone').value;
+                const discount = parseFloat(document.getElementById('foodDiscount').value) || 0;
+                const paymentMode = document.getElementById('foodPaymentMode').value;
+                
+                // Get food items data
+                const foodItems = [];
+                const foodItemRows = foodItemsContainer.querySelectorAll('.meal-plan-row');
+                foodItemRows.forEach(row => {
+                    const name = row.querySelector('.food-item-name').value;
+                    const quantity = parseFloat(row.querySelector('.food-item-quantity').value) || 0;
+                    const rate = parseFloat(row.querySelector('.food-item-rate').value) || 0;
+                    
+                    if (name && rate > 0) {
+                        foodItems.push({
+                            name,
+                            quantity,
+                            rate,
+                            amount: quantity * rate
+                        });
+                    }
+                });
+                
+                // Calculate totals
+                let foodTotal = 0;
+                foodItems.forEach(item => {
+                    foodTotal += item.amount;
+                });
+                
+                const cgst = foodTotal * 0.025;
+                const sgst = foodTotal * 0.025;
+                const totalAmount = foodTotal + cgst + sgst - discount;
+                
+                // Prepare data for Google Sheets
+                const data = {
+                    billType: 'Food Bill',
+                    billNumber,
+                    billDate,
+                    guestName: customerName,
+                    phone: customerPhone,
+                    foodItems: JSON.stringify(foodItems),
+                    foodTotal,
+                    cgst,
+                    sgst,
+                    discount,
+                    totalAmount,
+                    paymentMode,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Send data to Google Sheets
+                sendDataToGoogleSheets(data);
+            }
+            
+            function sendDataToGoogleSheets(data) {
+                // Replace with your Google Apps Script Web App URL
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbxaU2G0EPVrXvI9Eo9SASnnWE9JA23VbbexPbFhYRLgv4M_-H81gtNcaw9-TB9nUYOl/exec';
+                
+                if (scriptURL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                    alert('Google Sheets integration is not configured. Please set up the Google Apps Script Web App URL.');
+                    return;
+                }
+                
+                // Show loading indicator
+                saveToSheetsBtn.textContent = 'Saving...';
+                saveToSheetsBtn.disabled = true;
+                
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(() => {
+                    alert('Bill data saved to Google Sheets successfully!');
+                })
+                .catch(error => {
+                    console.error('Error saving to Google Sheets:', error);
+                    alert('Error saving to Google Sheets. Please check the console for details.');
+                })
+                .finally(() => {
+                    // Reset button
+                    saveToSheetsBtn.textContent = 'Save to Google Sheets';
+                    saveToSheetsBtn.disabled = false;
+                });
+            }
+            
+            // Helper functions
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-GB', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                }).replace(/\//g, '.');
+            }
+            
+            function formatTime(timeString) {
+                const [hours, minutes] = timeString.split(':');
+                const hour = parseInt(hours);
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                const formattedHour = hour % 12 || 12;
+                return `${formattedHour}:${minutes} ${ampm}`;
+            }
+            
+            function getOccupancyText(value) {
+                switch(value) {
+                    case '1': return 'Single';
+                    case '2': return 'Double';
+                    case '3': return 'Triple';
+                    case '4': return 'Quad';
+                    default: return value;
+                }
+            }
+            
+            // Initialize calculations
+            updateCalculations();
+            updateFoodCalculations();
+        });
+    </script>
+</body>
+</html>
